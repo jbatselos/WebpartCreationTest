@@ -42,4 +42,40 @@ export class TestingUtil {
     private async pause(time: number) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
+
+    public async timeout(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    
+    public async  DiscardChanges(){
+        await this.driver.findElement(By.css('button[data-automation-id="discardButton"]')).click();
+        await this.timeout(500);
+        await this.driver.findElement(By.css('button[data-automation-id="yesButton"]')).click();
+    
+    }
+    
+    public async  goToEdit(){
+        let editButtons = await this.driver.findElements(By.css('button[aria-label="Edit web part"]'));
+        await editButtons[1].click();
+    }
+
+    public async SetupEnviorment() {
+        jest.setTimeout(60000);
+        await this.driver.manage().window().maximize();
+        await (this.driver.get("https://owdevelop.sharepoint.com/sites/OWv2-Develop/SitePages/AutomatedTestPage.aspx"))
+        await (this.timeout(300));
+        await this.driver.findElement(By.name("loginfmt")).sendKeys("owdeveloper@owdevelop.onmicrosoft.com");
+        await this.driver.findElement(By.id("idSIButton9")).click();
+        await (this.timeout(1000));
+        await this.driver.findElement(By.name("passwd")).sendKeys("SOft5J3twJ8B!5T");
+        
+        await this.driver.findElement(By.id("idSIButton9")).click();
+        await (this.timeout(1000));
+        await this.driver.findElement(By.id("idSIButton9")).click();
+        await (this.timeout(1000));
+        await this.driver.findElement(By.name("Edit")).click();
+        await (this.timeout(6000));
+        expect(await this.driver.getCurrentUrl()).toBe("https://owdevelop.sharepoint.com/sites/OWv2-Develop/SitePages/AutomatedTestPage.aspx?Mode=Edit");
+        
+    }
 }

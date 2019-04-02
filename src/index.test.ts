@@ -1,5 +1,5 @@
 import {
-    WebDriver,
+    ActionSequence,
     Session,
     Capabilities,
     Executor,
@@ -11,6 +11,14 @@ import {
 } from 'selenium-webdriver';
 import * as fs from 'fs';
 import { TestingUtil } from "./TestingUtil";
+import { WebpartMaker } from "./WebpartMaker";
+
+var chrome = require("selenium-webdriver/chrome"); 
+require("chromedriver");
+var chrome = require("selenium-webdriver/chrome");
+var WebDriver = require("selenium-webdriver");
+ 
+
 
 
 jest.setTimeout(20000);
@@ -26,188 +34,43 @@ let driverJest;
 
 
 it('waits for the driver to start', () => {
+    jest.setTimeout(40000);
     return driver.then(_d => {
         driverJest = _d
     })
 })
 
-it('Can login to enviorment', async () => {await SetupEnviorment() })
-it('Can set up Tools And Apps', async () => { await TestToolApps() })
-it('Can set up Discover', async () => { await TestDiscover() })
-it('Can set up News List', async () => { await TestNewsList() })
-it('Can set up Event List', async () => { await TestEventList() })
-it('Can set up Information Bar', async () => { await TestInformation() })
-it('Can set up People Directory', async () => { await TestPeople() })
-it('Can set up Teams And Groups', async () => { await TestTeams() })
-it('discards changes', async () => { await DiscardChanges() })
+it('Can login to enviorment', async () => {await testingUtil.SetupEnviorment() })
+it('Can set up Tools And Apps', async () => { await TestWebpartSetup('button[data-automation-id="5fb28714-f831-431c-b5cb-6f24a558f522_0"]','div[data-sp-feature-tag="ToolsAppsWebPart web part (Tools & Apps)"]') })
+it('Can set up Discover', async () => { await TestWebpartSetup('button[data-automation-id="d37f91f9-32ca-4919-9b63-24b3789f7134_0"]','div[data-sp-feature-tag="SearchDocumentWebPart web part (Discover)"]') })
+it('Can set up News List', async () => { await TestWebpartSetup('button[data-automation-id="724de694-da8b-4658-98d5-83b56ebc8f23_0"]','div[data-sp-feature-tag="NewsCustomWebPart web part (News List)"]') })
+it('Can set up Event List', async () => { await TestWebpartSetup('button[data-automation-id="81a6e49c-5190-4167-adb7-06c27acb534a_0"]','div[data-sp-feature-tag="EventListWebPart web part (Event List)"]') })
+it('Can set up Information Bar', async () => { await TestWebpartSetup('button[data-automation-id="643032a7-f7ef-410a-a227-96c9372040cc_0"]','div[data-sp-feature-tag="InformationBarWebPart web part (Information Bar)"]') })
+it('Can set up People Directory', async () => { await TestWebpartSetup('button[data-automation-id="d48a9fa7-8e04-44ff-9215-699dd6f9f4b8_0"]','div[data-sp-feature-tag="PeopleDirectoryWebPart web part (People Directory)"]') })
+it('Can set up Teams And Groups', async () => { await TestWebpartSetup('button[data-automation-id="7becf7bd-2278-44ee-a609-caedd36f13f6_0"]','div[data-sp-feature-tag="TeamsGroupsWebPart web part (My Teams & Groups)"]') })
+it('discards changes', async () => { await testingUtil.DiscardChanges() })
 it('closes the driver', async () => { await driver.close() })
 
 
-async function SetupEnviorment() {
-    jest.setTimeout(60000);
-    await driver.manage().window().maximize();
-    await (driver.get("https://owdevelop.sharepoint.com/sites/OWv2-Develop/SitePages/AutomatedTestPage.aspx"))
-    await (timeout(300));
-    await driver.findElement(By.name("loginfmt")).sendKeys("owdeveloper@owdevelop.onmicrosoft.com");
-    await driver.findElement(By.id("idSIButton9")).click();
-    await (timeout(300));
-    await driver.findElement(By.name("passwd")).sendKeys("&LEM3TF'wkNe4cCh");
-    await driver.findElement(By.id("idSIButton9")).click();
-    await (timeout(300));
-    await driver.findElement(By.id("idSIButton9")).click();
-    await (timeout(300));
-    await driver.findElement(By.name("Edit")).click();
-    await (timeout(4000));
-    expect(await driver.getCurrentUrl()).toBe("https://owdevelop.sharepoint.com/sites/OWv2-Develop/SitePages/AutomatedTestPage.aspx?Mode=Edit");
-    
-}
-async function TestToolApps() {
 
-    await SetupWebpartLocal('button[data-automation-id="5fb28714-f831-431c-b5cb-6f24a558f522_0"]');
+async function TestWebpartSetup(webpartIcon:string,webpartName:string) {
 
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="ToolsAppsWebPart web part (Tools & Apps)"]')));
+    await SetupWebpartLocal(webpartIcon);
+
+    var element = await (driver.findElement(By.css(webpartName)));
     var attrib = await (element.getAttribute("class"));
 
     expect(attrib).not.toBeNull;
-    await remove();
-}
-async function TestDiscover() {
-
-    await SetupWebpartLocal('button[data-automation-id="d37f91f9-32ca-4919-9b63-24b3789f7134_0"]');
-
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="SearchDocumentWebPart web part (Discover)"]')));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await remove();
-}
-async function TestNewsList() {
-
-    await SetupWebpartLocal('button[data-automation-id="724de694-da8b-4658-98d5-83b56ebc8f23_0"]');
-
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="NewsCustomWebPart web part (News List)"]')));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await remove();
-}
-async function TestEventList() {
-
-    await SetupWebpartLocal('button[data-automation-id="81a6e49c-5190-4167-adb7-06c27acb534a_0"]');
-
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="EventListWebPart web part (Event List)"]')));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await remove();
-}
-async function TestInformation() {
-
-    await SetupWebpartLocal('button[data-automation-id="643032a7-f7ef-410a-a227-96c9372040cc_0"]');
-
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="InformationBarWebPart web part (Information Bar)"]')));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await remove();
-}
-async function TestPeople() {
-
-    await SetupWebpartLocal('button[data-automation-id="d48a9fa7-8e04-44ff-9215-699dd6f9f4b8_0"]');
-
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="PeopleDirectoryWebPart web part (People Directory)"]')));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await remove();
-}
-async function TestTeams() {
-
-    await SetupWebpartLocal('button[data-automation-id="7becf7bd-2278-44ee-a609-caedd36f13f6_0"]');
-
-    var element = await (driver.findElement(By.css('div[data-sp-feature-tag="TeamsGroupsWebPart web part (My Teams & Groups)"]')));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await remove();
+    await testingUtil.remove();
 }
 
+async function SetupWebpartLocal(webpartIcon:string){
 
-
-async function SetupWebpartLocal(data:string){
-
-    await timeout(1000);
+    await testingUtil.timeout(1000);
     var add = await driver.findElements(By.css('i[data-icon-name="Add"]'));
     await add[1].click();
-    await timeout(1500);
+    await testingUtil.timeout(1000);
    
-    await driver.findElement(By.css(data)).click();
+    await driver.findElement(By.css(webpartIcon)).click();
    
-}
-
-
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-//TODO: implement this better...
-function pageLoaded() {
-    return new Promise(resolve => setTimeout(resolve, 2500));
-}
-async function DiscardChanges(){
-    await driver.findElement(By.css('button[data-automation-id="discardButton"]')).click();
-    await timeout(500);
-    await driver.findElement(By.css('button[data-automation-id="yesButton"]')).click();
-
-}
-async function takeScreenShot(fileName: string) {
-    var screenshot = await (driver.takeScreenshot());
-    fs.writeFile("img/" + fileName + ".png", screenshot, 'base64', function (err) {
-        if (!!err) { console.log(err) };
-    });
-}
-async function remove() {
-    var element = await (driver.findElement(By.xpath("//button[starts-with(@data-automation-id, 'deleteButton')]")));
-    await element.click();
-    await timeout(1000);
-    element = await (driver.findElement(By.xpath("//button[starts-with(@data-automation-id, 'confirmButton')]")));
-    await element.click();
-    await timeout(1000);
-}
-
-async function layoutTests( title: string, layout: string){
-    let lists = await driver.findElements(By.css('div[role="listbox"]'));
-    await lists[0].click();
-    await driver.findElement(By.css('button[title="List"]')).click();
-    await timeout(500);
-    await driver.findElement(By.css('button[data-automation-id="propertyPaneApplyButton"]')).click();
-    
-    
-    //click on list
-    await timeout(1000);
-    
-    lists[1].click();
-    await timeout(500);
-    //click on certain layout
-    let dataIndex = 'button[title="'+title+'"]';
-    await driver.findElement(By.css(dataIndex)).click();
-    //apply
-    await driver.findElement(By.css('button[data-automation-id="propertyPaneApplyButton"]')).click();
-    await timeout(500);
-
-    
-    await lists[0].click();
-    await driver.findElement(By.css('button[title="Tile"]')).click();
-    await timeout(500);
-    await driver.findElement(By.css('button[data-automation-id="propertyPaneApplyButton"]')).click();
-
-    
-    //check if results match
-    let element = await driver.findElement(By.css('a[href="https://wsj.com"]'));
-    element.getAttribute('class').then( attr =>  {
-        expect(attr).toMatch(layout)
-    })
-
-
-
 }
