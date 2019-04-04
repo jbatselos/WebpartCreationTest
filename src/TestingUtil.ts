@@ -78,4 +78,26 @@ export class TestingUtil {
         expect(await this.driver.getCurrentUrl()).toBe("https://owdevelop.sharepoint.com/sites/OWv2-Develop/SitePages/AutomatedTestPage.aspx?Mode=Edit");
         
     }
+
+    public async TestWebpartSetup(webpartIcon:string,webpartName:string) {
+
+        await this.SetupWebpartLocal(webpartIcon);
+    
+        var element = await (this.driver.findElement(By.css(webpartName)));
+        var attrib = await (element.getAttribute("class"));
+    
+        expect(attrib).not.toBeNull;
+        await this.remove();
+    }
+    
+    public async SetupWebpartLocal(webpartIcon:string){
+    
+        await this.timeout(1000);
+        var add = await this.driver.findElements(By.css('i[data-icon-name="Add"]'));
+        await add[1].click();
+        await this.timeout(1000);
+       
+        await this.driver.findElement(By.css(webpartIcon)).click();
+       
+    }
 }

@@ -4,6 +4,7 @@ module.exports = {
 	},
 	testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|ts)$",
 	moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+	reporters: [ "default", "jest-junit" ]
 };
 // testRegex: ".*\\src\\.*\.test\.(jsx?|tsx?|ts?|js)$",
   // testRegex: "(/src/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",

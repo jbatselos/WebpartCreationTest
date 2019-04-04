@@ -41,36 +41,13 @@ it('waits for the driver to start', () => {
 })
 
 it('Can login to enviorment', async () => {await testingUtil.SetupEnviorment() })
-it('Can set up Tools And Apps', async () => { await TestWebpartSetup('button[data-automation-id="5fb28714-f831-431c-b5cb-6f24a558f522_0"]','div[data-sp-feature-tag="ToolsAppsWebPart web part (Tools & Apps)"]') })
-it('Can set up Discover', async () => { await TestWebpartSetup('button[data-automation-id="d37f91f9-32ca-4919-9b63-24b3789f7134_0"]','div[data-sp-feature-tag="SearchDocumentWebPart web part (Discover)"]') })
-it('Can set up News List', async () => { await TestWebpartSetup('button[data-automation-id="724de694-da8b-4658-98d5-83b56ebc8f23_0"]','div[data-sp-feature-tag="NewsCustomWebPart web part (News List)"]') })
-it('Can set up Event List', async () => { await TestWebpartSetup('button[data-automation-id="81a6e49c-5190-4167-adb7-06c27acb534a_0"]','div[data-sp-feature-tag="EventListWebPart web part (Event List)"]') })
-it('Can set up Information Bar', async () => { await TestWebpartSetup('button[data-automation-id="643032a7-f7ef-410a-a227-96c9372040cc_0"]','div[data-sp-feature-tag="InformationBarWebPart web part (Information Bar)"]') })
-it('Can set up People Directory', async () => { await TestWebpartSetup('button[data-automation-id="d48a9fa7-8e04-44ff-9215-699dd6f9f4b8_0"]','div[data-sp-feature-tag="PeopleDirectoryWebPart web part (People Directory)"]') })
-it('Can set up Teams And Groups', async () => { await TestWebpartSetup('button[data-automation-id="7becf7bd-2278-44ee-a609-caedd36f13f6_0"]','div[data-sp-feature-tag="TeamsGroupsWebPart web part (My Teams & Groups)"]') })
+it('Can set up Tools And Apps', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="5fb28714-f831-431c-b5cb-6f24a558f522_0"]','div[data-sp-feature-tag="ToolsAppsWebPart web part (Tools & Apps)"]') })
+it('Can set up Discover', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="d37f91f9-32ca-4919-9b63-24b3789f7134_0"]','div[data-sp-feature-tag="SearchDocumentWebPart web part (Discover)"]') })
+it('Can set up News List', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="724de694-da8b-4658-98d5-83b56ebc8f23_0"]','div[data-sp-feature-tag="NewsCustomWebPart web part (News List)"]') })
+it('Can set up Event List', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="81a6e49c-5190-4167-adb7-06c27acb534a_0"]','div[data-sp-feature-tag="EventListWebPart web part (Event List)"]') })
+it('Can set up Information Bar', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="643032a7-f7ef-410a-a227-96c9372040cc_0"]','div[data-sp-feature-tag="InformationBarWebPart web part (Information Bar)"]') })
+it('Can set up People Directory', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="d48a9fa7-8e04-44ff-9215-699dd6f9f4b8_0"]','div[data-sp-feature-tag="PeopleDirectoryWebPart web part (People Directory)"]') })
+it('Can set up Teams And Groups', async () => { await testingUtil.TestWebpartSetup('button[data-automation-id="7becf7bd-2278-44ee-a609-caedd36f13f6_0"]','div[data-sp-feature-tag="TeamsGroupsWebPart web part (My Teams & Groups)"]') })
 it('discards changes', async () => { await testingUtil.DiscardChanges() })
 it('closes the driver', async () => { await driver.close() })
 
-
-
-async function TestWebpartSetup(webpartIcon:string,webpartName:string) {
-
-    await SetupWebpartLocal(webpartIcon);
-
-    var element = await (driver.findElement(By.css(webpartName)));
-    var attrib = await (element.getAttribute("class"));
-
-    expect(attrib).not.toBeNull;
-    await testingUtil.remove();
-}
-
-async function SetupWebpartLocal(webpartIcon:string){
-
-    await testingUtil.timeout(1000);
-    var add = await driver.findElements(By.css('i[data-icon-name="Add"]'));
-    await add[1].click();
-    await testingUtil.timeout(1000);
-   
-    await driver.findElement(By.css(webpartIcon)).click();
-   
-}
